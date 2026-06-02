@@ -19,6 +19,7 @@ import StaffPage from "./pages/StaffPage";
 import TeamPage from "./pages/TeamPage";
 import UsersPage from "./pages/UsersPage";
 import AIAssistantPage from "./pages/AIAssistantPage";
+import MyTreatmentsPage from "./pages/MyTreatmentsPage";
 import NotFoundPage from "./pages/NotFoundPage";
 
 function App() {
@@ -35,6 +36,7 @@ function App() {
           <Route path="/finance" element={<FinancePage />} />
           <Route path="/finance/:id" element={<FinanceDetailPage />} />
           <Route path="/operations" element={<OperationsPage />} />
+          <Route path="/my-treatments" element={<MyTreatmentsPage />} />
           <Route path="/operations/rooms/:id" element={<RoomDetailPage />} />
           <Route path="/operations/shifts/:id" element={<ShiftDetailPage />} />
           <Route path="/patients" element={<PatientsPage />} />

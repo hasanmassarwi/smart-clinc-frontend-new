@@ -13,7 +13,8 @@ export default function UsersPage() {
     fullName: "",
     email: "",
     password: "",
-    userType: "patient"
+    phone: "",
+    role: "patient"
   });
 
   useEffect(() => {
@@ -36,7 +37,7 @@ export default function UsersPage() {
     e.preventDefault();
     setError("");
     
-    if (!form.fullName || !form.email || !form.password || !form.userType) {
+    if (!form.fullName || !form.email || !form.password || !form.phone || !form.role) {
       setError("כל השדות חובה");
       return;
     }
@@ -47,10 +48,11 @@ export default function UsersPage() {
         fullName: form.fullName,
         email: form.email,
         password: form.password,
-        userType: form.userType
+        phone: form.phone,
+        role: form.role
       });
       
-      setForm({ fullName: "", email: "", password: "", userType: "patient" });
+      setForm({ fullName: "", email: "", password: "", phone: "", role: "patient" });
       setShowModal(false);
       await fetchUsers();
     } catch (err) {
@@ -61,15 +63,17 @@ export default function UsersPage() {
   }
 
   const userTypeLabels = {
-    doctor: "רופא",
-    secretary: "מזכירה",
-    patient: "מטופל"
+    DOCTOR: "רופא",
+    ADMIN: "מנהל מערכת",
+    SECRETARY: "מזכירה",
+    PATIENT: "מטופל"
   };
 
   const userTypeColors = {
-    doctor: "bg-blue-100 text-blue-800",
-    secretary: "bg-purple-100 text-purple-800",
-    patient: "bg-green-100 text-green-800"
+    DOCTOR: "bg-blue-100 text-blue-800",
+    ADMIN: "bg-red-100 text-red-800",
+    SECRETARY: "bg-purple-100 text-purple-800",
+    PATIENT: "bg-green-100 text-green-800"
   };
 
   return (
@@ -111,8 +115,8 @@ export default function UsersPage() {
                     <td className="px-6 py-4 text-sm text-slate-900">{user.fullName}</td>
                     <td className="px-6 py-4 text-sm text-slate-600">{user.email}</td>
                     <td className="px-6 py-4 text-sm">
-                      <span className={`inline-block rounded-full px-3 py-1 text-xs font-medium ${userTypeColors[user.userType] || "bg-slate-100 text-slate-800"}`}>
-                        {userTypeLabels[user.userType] || user.userType}
+                      <span className={`inline-block rounded-full px-3 py-1 text-xs font-medium ${userTypeColors[user.role] || "bg-slate-100 text-slate-800"}`}>
+                        {userTypeLabels[user.role] || user.role}
                       </span>
                     </td>
                     <td className="px-6 py-4 text-sm text-slate-600">{new Date(user.createdAt).toLocaleDateString("he-IL")}</td>
@@ -165,6 +169,19 @@ export default function UsersPage() {
                 />
               </div>
 
+              {/* Phone */}
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">טלפון</label>
+                <input
+                  type="tel"
+                  value={form.phone}
+                  onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                  className="w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-blue-500"
+                  placeholder="050-1234567"
+                  required
+                />
+              </div>
+
               {/* Password */}
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-2">סיסמה</label>
@@ -182,14 +199,14 @@ export default function UsersPage() {
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-2">סוג משתמש</label>
                 <select
-                  value={form.userType}
-                  onChange={(e) => setForm({ ...form, userType: e.target.value })}
+                  value={form.role}
+                  onChange={(e) => setForm({ ...form, role: e.target.value })}
                   className="w-full rounded-lg border border-slate-300 px-3 py-2 outline-none focus:border-blue-500"
                   required
                 >
-                  <option value="doctor">רופא</option>
-                  <option value="secretary">מזכירה</option>
-                  <option value="patient">מטופל</option>
+                  <option value="DOCTOR">רופא</option>
+                  <option value="SECRETARY">מזכירה</option>
+                  <option value="PATIENT">מטופל</option>
                 </select>
               </div>
 

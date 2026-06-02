@@ -70,7 +70,7 @@ export default function LoginPage() {
             />
           </div>
 
-          <div>
+          {/* <div>
             <label className="mb-1 block text-sm font-medium text-slate-700">2FA Code (optional)</label>
             <input
               type="text"
@@ -79,7 +79,7 @@ export default function LoginPage() {
               value={form.twoFactorCode}
               onChange={(e) => updateField("twoFactorCode", e.target.value)}
             />
-          </div>
+          </div> */}
 
           {error ? <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{error}</p> : null}
 

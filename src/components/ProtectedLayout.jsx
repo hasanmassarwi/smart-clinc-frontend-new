@@ -28,14 +28,22 @@ function navLinkActive(href, pathname) {
   return false;
 }
 
+const roleLabels = {
+  DOCTOR: "רופא",
+  ADMIN: "מנהל מערכת",
+  SECRETARY: "מזכירה",
+  PATIENT: "מטופל"
+};
+
 const navLinks = [
   { href: "/dashboard", label: "לוח בקרה", icon: LayoutDashboard },
   // { href: "/dashboard/alerts", label: "התראות", icon: Bell },
   { href: "/finance", label: "פיננסי", icon: Wallet },
   { href: "/reports", label: "דוחות", icon: FileBarChart2 },
   { href: "/documents", label: "מסמכים", icon: FileText },
-  { href: "/operations", label: "חדרים", icon: Building2 },
-  { href: "/team", label: "צוות", icon: Users },
+  { href: "/operations", label: "טיפולים", icon: Building2 },
+  { href: "/my-treatments", label: "הטיפולים שלי", icon: Bot },
+  { href: "/team", label: "מטופלים", icon: Users },
   // { href: "/ai-assistant", label: "עוזר AI", icon: Bot },
   { href: "/users", label: "משתמשים", icon: UserCog }
   // { href: "/security", label: "אבטחה", icon: Shield }
@@ -45,6 +53,13 @@ export default function ProtectedLayout({ title, subtitle, children }) {
   const { isAuthenticated, isLoading, user, logout } = useAuth();
   const router = useNavigate();
   const { pathname } = useLocation();
+
+  const linksToShow = navLinks.filter((link) => {
+    if (link.href === "/users") {
+      return user?.role === "ADMIN" || user?.role === "admin";
+    }
+    return true;
+  });
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -74,7 +89,7 @@ export default function ProtectedLayout({ title, subtitle, children }) {
             </Link>
 
             <nav className="hidden min-w-0 flex-1 items-center justify-center gap-1 overflow-x-auto lg:flex">
-              {navLinks.map((link) => {
+              {linksToShow.map((link) => {
                 const Icon = link.icon;
                 const active = navLinkActive(link.href, pathname);
                 return (
@@ -108,7 +123,7 @@ export default function ProtectedLayout({ title, subtitle, children }) {
 
             <div className="flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50/80 py-1.5 pl-2 pr-3">
               <div className="text-right">
-                <p className="text-sm font-semibold text-slate-800">מנהל מערכת</p>
+                <p className="text-sm font-semibold text-slate-800">{roleLabels[user?.role] || user?.role || "משתמש"}</p>
                 <p className="max-w-[120px] truncate text-xs text-slate-500">{user?.fullName || user?.email}</p>
               </div>
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-purple-600 text-sm font-bold text-white shadow-inner">
@@ -130,7 +145,7 @@ export default function ProtectedLayout({ title, subtitle, children }) {
         </div>
 
         <div className="flex gap-1 overflow-x-auto border-t border-slate-100 px-3 py-2 lg:hidden">
-          {navLinks.map((link) => {
+          {linksToShow.map((link) => {
             const Icon = link.icon;
             const active = navLinkActive(link.href, pathname);
             return (

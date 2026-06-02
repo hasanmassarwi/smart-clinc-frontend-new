@@ -26,6 +26,31 @@ export function AuthProvider({ children }) {
     setIsLoading(false);
   }, []);
 
+  useEffect(() => {
+    function handleTokenRefreshed(e) {
+      const next = e?.detail?.accessToken;
+      if (next) {
+        setAccessToken(next);
+      }
+    }
+
+    function handleLogoutEvent() {
+      setUser(null);
+      setAccessToken(null);
+      setRefreshToken(null);
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      localStorage.removeItem("user");
+    }
+
+    window.addEventListener("auth:tokenRefreshed", handleTokenRefreshed);
+    window.addEventListener("auth:logout", handleLogoutEvent);
+    return () => {
+      window.removeEventListener("auth:tokenRefreshed", handleTokenRefreshed);
+      window.removeEventListener("auth:logout", handleLogoutEvent);
+    };
+  }, []);
+
   async function login(email, password, twoFactorCode) {
     const payload = { email, password };
     if (twoFactorCode) payload.twoFactorCode = twoFactorCode;
