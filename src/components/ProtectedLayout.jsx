@@ -10,7 +10,8 @@ import {
   LayoutDashboard,
   UserCog,
   Wallet,
-  Bell
+  Bell,
+  Clock
 } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 
@@ -21,7 +22,7 @@ function navLinkActive(href, pathname) {
     return false;
   }
   if (href === "/team") {
-    return pathname === "/team" || pathname === "/staff" || pathname.startsWith("/team/") || pathname.startsWith("/staff/");
+    return pathname === "/team" || pathname === "/staff" || pathname.startsWith("/team/") || pathname.startsWith("/staff/") || pathname === "/users";
   }
   if (pathname === href) return true;
   if (pathname.startsWith(`${href}/`)) return true;
@@ -41,11 +42,15 @@ const navLinks = [
   { href: "/finance", label: "פיננסי", icon: Wallet },
   { href: "/reports", label: "דוחות", icon: FileBarChart2 },
   { href: "/documents", label: "מסמכים", icon: FileText },
+  { href: "/my-documents", label: "המסמכים שלי", icon: FileText },
   { href: "/operations", label: "טיפולים", icon: Building2 },
   { href: "/my-treatments", label: "הטיפולים שלי", icon: Bot },
   { href: "/team", label: "מטופלים", icon: Users },
-  // { href: "/ai-assistant", label: "עוזר AI", icon: Bot },
-  { href: "/users", label: "משתמשים", icon: UserCog }
+  { href: "/my-shifts", label: "המשמרות שלי", icon: Clock },
+  { href: "/rooms", label: "חדרים", icon: Building2 },
+  { href: "/medical-visit", label: "ביקור רפואי", icon: Wallet },
+  { href: "/status-billing", label: "סטטוס חיובים", icon: FileBarChart2 }
+  // { href: "/ai-assistant", label: "עוזר AI", icon: Bot }
   // { href: "/security", label: "אבטחה", icon: Shield }
 ];
 
@@ -55,8 +60,17 @@ export default function ProtectedLayout({ title, subtitle, children }) {
   const { pathname } = useLocation();
 
   const linksToShow = navLinks.filter((link) => {
-    if (link.href === "/users") {
-      return user?.role === "ADMIN" || user?.role === "admin";
+    const isDoctorRole = user?.role === "DOCTOR" || user?.role === "doctor";
+    const isSecurityRole = user?.role === "SECRETARY" || user?.role === "SECRETARY" || user?.role === "SECURITY" || user?.role === "security";
+    const isPatientRole = user?.role === "PATIENT" || user?.role === "patient";
+    if (isDoctorRole) {
+      return ["/dashboard", "/my-treatments", "/finance", "/documents"].includes(link.href);
+    }
+    if (isSecurityRole) {
+      return ["/documents", "/finance", "/team", "/rooms", "/operations"].includes(link.href);
+    }
+    if (isPatientRole) {
+      return ["/medical-visit", "/my-documents", "/status-billing"].includes(link.href);
     }
     return true;
   });
@@ -96,11 +110,10 @@ export default function ProtectedLayout({ title, subtitle, children }) {
                   <Link
                     key={link.href}
                     to={link.href}
-                    className={`relative flex shrink-0 flex-col items-center gap-0.5 rounded-xl px-2.5 py-2 text-xs font-medium transition md:px-3 md:text-sm ${
-                      active
-                        ? "bg-blue-600 text-white shadow-md shadow-blue-600/30"
-                        : "text-slate-600 hover:bg-slate-100"
-                    }`}
+                    className={`relative flex shrink-0 flex-col items-center gap-0.5 rounded-xl px-2.5 py-2 text-xs font-medium transition md:px-3 md:text-sm ${active
+                      ? "bg-blue-600 text-white shadow-md shadow-blue-600/30"
+                      : "text-slate-600 hover:bg-slate-100"
+                      }`}
                   >
                     <Icon size={18} strokeWidth={active ? 2.25 : 2} className={active ? "text-white" : ""} />
                     <span className="whitespace-nowrap">{link.label}</span>
@@ -152,9 +165,8 @@ export default function ProtectedLayout({ title, subtitle, children }) {
               <Link
                 key={link.href}
                 to={link.href}
-                className={`flex shrink-0 items-center gap-1 rounded-lg px-2 py-1.5 text-xs ${
-                  active ? "bg-blue-600 text-white" : "bg-slate-100 text-slate-700"
-                }`}
+                className={`flex shrink-0 items-center gap-1 rounded-lg px-2 py-1.5 text-xs ${active ? "bg-blue-600 text-white" : "bg-slate-100 text-slate-700"
+                  }`}
               >
                 <Icon size={14} />
                 {link.label}

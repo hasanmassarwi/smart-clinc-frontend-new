@@ -1,14 +1,17 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import ProtectedLayout from "../components/ProtectedLayout";
 import api from "../lib/api";
 import { Loader } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 
 export default function MyTreatmentsPage() {
+  const navigate = useNavigate();
   const { user } = useAuth();
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [approving, setApproving] = useState("");
 
   useEffect(() => {
     fetchAppointments();
@@ -35,14 +38,29 @@ export default function MyTreatmentsPage() {
     }
   }
 
+  async function approveTreatment(appointmentId) {
+    try {
+      setApproving(appointmentId);
+      setError("");
+      await api.put(`/appointments/${appointmentId}/approve`);
+      await fetchAppointments();
+    } catch (err) {
+      console.error(err);
+      setError(err?.response?.data?.message || "שגיאה באישור הטיפול");
+    } finally {
+      setApproving("");
+    }
+  }
+
   const statusColors = {
     SCHEDULED: "bg-blue-100 text-blue-800",
+    APPROVED: "bg-amber-100 text-amber-800",
     COMPLETED: "bg-green-100 text-green-800",
     CANCELLED: "bg-red-100 text-red-800"
   };
 
   return (
-    <ProtectedLayout title="הטיפולים שלי" subtitle="רשימת הטיפולים המשוייכים אלי">
+    <ProtectedLayout >
       <div className="rounded-2xl bg-white p-6 shadow-sm text-right">
         <h2 className="text-lg font-semibold mb-4">הטיפולים שלי</h2>
 
@@ -85,8 +103,32 @@ export default function MyTreatmentsPage() {
                     </div>
 
                     {a.notes ? <div className="mt-3 text-sm text-slate-700">הערות: {a.notes}</div> : null}
+                    {a.visitSummary ? <div className="mt-3 text-sm text-slate-700">סיכום ביקור: {a.visitSummary}</div> : null}
+                    {a.amount !== undefined && a.amount !== null ? (
+                      <div className="mt-2 text-sm text-slate-700">סכום טיפול: ₪{a.amount}</div>
+                    ) : null}
+                    {user?.role === "DOCTOR" ? (
+                      <div className="mt-4 flex flex-wrap justify-end gap-2">
+                        <button
+                          type="button"
+                          onClick={() => navigate(`/appointments/${a._id || a.id}/summary`)}
+                          className="rounded-full bg-slate-800 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-900"
+                        >
+                          {a.visitSummary || a.amount ? "ערוך סיכום" : "הוסף סיכום"}
+                        </button>
+                        {a.status === "SCHEDULED" ? (
+                          <button
+                            type="button"
+                            onClick={() => approveTreatment(a._id || a.id)}
+                            disabled={approving === (a._id || a.id)}
+                            className="rounded-full bg-green-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50"
+                          >
+                            {approving === (a._id || a.id) ? "מאשר..." : "אשר טיפול"}
+                          </button>
+                        ) : null}
+                      </div>
+                    ) : null}
                   </div>
-                  {/* createdAt removed per UX request */}
                 </div>
               </li>
             ))}

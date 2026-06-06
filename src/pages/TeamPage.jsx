@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import ProtectedLayout from "../components/ProtectedLayout";
 import api from "../lib/api";
 import { Loader } from "lucide-react";
@@ -57,6 +58,14 @@ export default function TeamPage() {
 
   return (
     <ProtectedLayout title="ניהול צוות" subtitle="תצוגת צוות, תפקידים וקבוצות עבודה">
+      <div className="mb-4 flex justify-end">
+        <Link
+          to="/users"
+          className="rounded-xl border border-slate-300 bg-slate-100 px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-200"
+        >
+          ניהול משתמשים
+        </Link>
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Create patient form (left on LTR, right on RTL due to text-right) */}
         <div className="rounded-2xl bg-white p-6 shadow-sm text-right">

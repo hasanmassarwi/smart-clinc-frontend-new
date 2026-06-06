@@ -105,6 +105,7 @@ export default function UsersPage() {
                 <tr>
                   <th className="px-6 py-3 text-sm font-semibold text-slate-700">שם מלא</th>
                   <th className="px-6 py-3 text-sm font-semibold text-slate-700">אימייל</th>
+                  <th className="px-6 py-3 text-sm font-semibold text-slate-700">טלפון</th>
                   <th className="px-6 py-3 text-sm font-semibold text-slate-700">סוג משתמש</th>
                   <th className="px-6 py-3 text-sm font-semibold text-slate-700">תאריך הוספה</th>
                 </tr>
@@ -114,6 +115,7 @@ export default function UsersPage() {
                   <tr key={user.id || index} className="border-b border-slate-100 hover:bg-slate-50 transition">
                     <td className="px-6 py-4 text-sm text-slate-900">{user.fullName}</td>
                     <td className="px-6 py-4 text-sm text-slate-600">{user.email}</td>
+                    <td className="px-6 py-4 text-sm text-slate-600">{user.phone}</td>
                     <td className="px-6 py-4 text-sm">
                       <span className={`inline-block rounded-full px-3 py-1 text-xs font-medium ${userTypeColors[user.role] || "bg-slate-100 text-slate-800"}`}>
                         {userTypeLabels[user.role] || user.role}
