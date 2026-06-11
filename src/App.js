@@ -26,6 +26,7 @@ import NotFoundPage from "./pages/NotFoundPage";
 import MyShiftsPage from "./pages/MyShiftsPage";
 import MedicalVisit from "./pages/MedicalVisit";
 import StatusBilling from "./pages/StatusbBlling";
+import PayComponent from "./pages/PayComponent";
 
 function App() {
   return (
@@ -53,6 +54,7 @@ function App() {
           <Route path="/reports" element={<ReportsPage />} />
           <Route path="/medical-visit" element={<MedicalVisit />} />
           <Route path="/status-billing" element={<StatusBilling />} />
+          <Route path="/account-page" element={<PayComponent />} />
           {/* <Route path="/security" element={<SecurityPage />} /> */}
           <Route path="/staff" element={<StaffPage />} />
           <Route path="/team" element={<TeamPage />} />

@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ProtectedLayout from "../components/ProtectedLayout";
 import api from "../lib/api";
-import { Loader } from "lucide-react";
+import { Loader, ArrowLeft } from "lucide-react";
 
 export default function TeamPage() {
+  const navigate = useNavigate();
   const [patients, setPatients] = useState([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -139,12 +140,22 @@ export default function TeamPage() {
           ) : (
             <ul className="space-y-3">
               {patients.map((p) => (
-                <li key={p.id || p._id} className="flex items-center justify-between rounded-lg border border-slate-100 p-3">
+                <li key={p.id || p._id} className="flex flex-col gap-3 rounded-lg border border-slate-100 p-3 md:flex-row md:items-center md:justify-between">
                   <div>
                     <p className="text-sm font-medium text-slate-900">{p.fullName}</p>
                     <p className="text-xs text-slate-500">{p.phone} {p.email ? `· ${p.email}` : null}</p>
                   </div>
-                  <div className="text-xs text-slate-400">{p.createdAt ? new Date(p.createdAt).toLocaleDateString("he-IL") : "-"}</div>
+                  <div className="flex items-center gap-2">
+                    <div className="text-xs text-slate-400">{p.createdAt ? new Date(p.createdAt).toLocaleDateString("he-IL") : "-"}</div>
+                    <button
+                      type="button"
+                      onClick={() => navigate(`/patients/${p._id || p.id}`)}
+                      className="inline-flex items-center gap-1 rounded-lg bg-blue-600 px-3 py-2 text-sm font-semibold text-white transition hover:bg-blue-700"
+                    >
+                      הצג פרטים
+                      <ArrowLeft size={15} />
+                    </button>
+                  </div>
                 </li>
               ))}
             </ul>

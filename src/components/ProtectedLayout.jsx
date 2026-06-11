@@ -49,7 +49,8 @@ const navLinks = [
   { href: "/my-shifts", label: "המשמרות שלי", icon: Clock },
   { href: "/rooms", label: "חדרים", icon: Building2 },
   { href: "/medical-visit", label: "ביקור רפואי", icon: Wallet },
-  { href: "/status-billing", label: "סטטוס חיובים", icon: FileBarChart2 }
+  { href: "/status-billing", label: "סטטוס חיובים", icon: FileBarChart2 },
+  { href: "/account-page", label: "דף חשבון", icon: UserCog }
   // { href: "/ai-assistant", label: "עוזר AI", icon: Bot }
   // { href: "/security", label: "אבטחה", icon: Shield }
 ];
@@ -67,7 +68,7 @@ export default function ProtectedLayout({ title, subtitle, children }) {
       return ["/dashboard", "/my-treatments", "/finance", "/documents"].includes(link.href);
     }
     if (isSecurityRole) {
-      return ["/documents", "/finance", "/team", "/rooms", "/operations"].includes(link.href);
+      return ["/finance", "/team", "/rooms", "/account-page"].includes(link.href);
     }
     if (isPatientRole) {
       return ["/medical-visit", "/my-documents", "/status-billing"].includes(link.href);
